@@ -30,36 +30,36 @@ const OptionCheckbox: React.FC<{
 type Hinsyu = "jouon" | "chilled"
 
 type Hinmoku = {
+  id: string
   hinsyu: Hinsyu
   label: string
   num: string
 }
 
 type Shop = {
+  id: string
   label: string
   hinmokus: Hinmoku[]
 }
 
 const def_labels = [
-  "トオカツ",
-  "シノブ",
-  "酵母パン",
-  "第一パン",
-  "敷島製パン",
-  "伊藤パン",
-  "フジパン",
-  "神戸屋",
-  "Kアイス",
-  "ナシオ",
-  "国分常温",
+  ["tokatu", "トオカツ"],
+  ["sinobu", "シノブ"],
+  // "酵母パン",
+  // "第一パン",
+  // "敷島製パン",
+  // "伊藤パン",
+  // "フジパン",
+  // "神戸屋",
+  // "Kアイス",
+  // "ナシオ",
+  // "国分常温",
 ]
 
 const def_labels_chilled = ["チルド", "トオカツ", "デリア", "三桂"]
 
-const makeHinmokus = (hinsyu: Hinsyu, labels: string[]): Hinmoku[] =>
-  labels.map((label) => ({ hinsyu, label, num: "" }))
-
-const def_hinmokus = def_labels.map((label) => ({ label, num: "" }))
+const makeHinmokus = (hinsyu: Hinsyu, labels: string[][]): Hinmoku[] =>
+  labels.map(([id, label]) => ({ id, hinsyu, label, num: "" }))
 
 const def_shop_names: string[][] = [
   ["", ""],
@@ -134,7 +134,7 @@ console.log('too')
       return shops.map((shop) => {
         if (shop.label === selectedShop.label) {
           const new_shop = {
-            label: shop.label,
+            ...shop,
             hinmokus: shop.hinmokus.map((h) => {
             
               // const new_hinmoku: Hinmoku = {
@@ -144,7 +144,8 @@ console.log('too')
               // }
 
               // const new_hinmoku = Object.assign({}, h)
-              const new_hinmoku = h
+              // const new_hinmoku = h
+              const new_hinmoku = {...h}
 
               if (h.label === hin.label) {
                 const new_num = cb(new_hinmoku.num)
@@ -187,6 +188,7 @@ console.log('too')
 
     const new_shops = shops.concat([
       {
+        id: "shop_" + Date.now(),
         label,
         hinmokus: makeHinmokus("jouon", def_labels),
       },
@@ -235,7 +237,7 @@ console.log('too')
             }}
           >
             {def_shop_names.map((name) => {
-              return <option value={name[0]}>{name[1]}</option>
+              return <option value={name[0]} key={name[0]}>{name[1]}</option>
             })}
           </select>
 
@@ -259,7 +261,7 @@ console.log('too')
       {!selectedShop &&
         shops.map((shop) => {
           return (
-            <div>
+            <div key={shop.id}>
               <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setSelectedShop(shop)}>
                 {shop.label}
               </button>
@@ -282,10 +284,12 @@ console.log('too')
 
             <div className="relative">
               <table className="hinmoku">
-                {selectedShop.hinmokus.map((hin, index) => {
+                <tbody>
+
+                {shops.find(s => s.id === selectedShop.id)!.hinmokus.map((hin, index) => {
                   return (
-                    <tr key={index}>
-                      <td className="border-solid border">{hin.label}</td>
+                    <tr key={hin.id}>
+                      <td className="border-solid border">{hin.label}({hin.id})</td>
                       <td className="border-solid border">
                         <input
                           type="number"
@@ -315,6 +319,7 @@ console.log('too')
                     </tr>
                   )
                 })}
+                                </tbody>
               </table>
             </div>
           </>
