@@ -115,13 +115,12 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
                 const new_num = cb(h.num)
                 console.log('new_num', new_num);
                 
-                new_hinmoku.num = new_num
-                console.log('new_hinmoku', new_hinmoku);
-                return new_hinmoku
+                h.num = new_num
+                console.log('h', h);
               }
               
               return h
-            })
+            }),
           }
           console.log('new_shop', new_shop);
           console.log('a', new_shop.hinmokus[0])
