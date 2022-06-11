@@ -1,6 +1,6 @@
 import './App.css'
 import './post.css'
-import { Link, Switch, Route, BrowserRouter as Router } from 'react-router-dom'
+import { Switch, Route, BrowserRouter as Router } from 'react-router-dom'
 import Main from './components/Main'
 
 function App() {

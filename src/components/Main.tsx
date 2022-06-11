@@ -1,25 +1,21 @@
 import { useEffect, useState } from "react"
 import { useHistory } from "react-router"
 // import json from './commands.json'
-import { RadioItems } from "./Radio"
-import { handleWithSave, useLoad } from "../utils"
-import { handleToggleWithSave } from "./../utils"
-import Hinmoku from "./Hinmoku"
+// import Hinmoku from "./Hinmoku"
 
-const OPTION_BTN_CLASS = "bg-gray-600 rounded p-1"
 
-function getStorage(key: string): string | null {
-  try {
-    return localStorage.getItem(key)
-  } catch (error) {
-    return null
-  }
-}
-function setStorage(key: string, value: string): void {
-  try {
-    localStorage.setItem(key, value)
-  } catch (error) {}
-}
+// function getStorage(key: string): string | null {
+//   try {
+//     return localStorage.getItem(key)
+//   } catch (error) {
+//     return null
+//   }
+// }
+// function setStorage(key: string, value: string): void {
+//   try {
+//     localStorage.setItem(key, value)
+//   } catch (error) {}
+// }
 
 const OptionCheckbox: React.FC<{
   onChange: React.ChangeEventHandler<HTMLInputElement>
@@ -91,6 +87,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const [shops, setShops] = useState<Shop[]>([])
   const [selectedShop, setSelectedShop] = useState<Shop | null>(null)
   const [mode, setMode] = useState<Mode>("edit")
+  const [testHin , setTestHin] = useState({label: "test-hin", num: ""})
 
   const history = useHistory()
   const title = "生協"
@@ -100,6 +97,37 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
 
   const test = () => {}
 
+  const testAdd = () => {
+    if (!selectedShop) return
+
+    setShops((shops) => {
+      return shops.map((shop) => {
+        if (shop.label === selectedShop.label) {
+
+          return {
+            ...shop,
+            hinmokus: shop.hinmokus.map(hin => {
+              if (hin.label === "トオカツ") {
+console.log('too')
+
+                const pre = hin.num === "" ? 0 : +hin.num
+                
+                console.log('pre ', pre);
+                
+             return {
+                  ...hin,
+                  num: "" + (pre + 1)
+                }
+              }
+              return hin
+            })
+          }
+        }
+        return shop
+      }
+      )
+    })
+  }
   const setHinmokuNum = (hin: Hinmoku, cb: (pre: string) => string) => {
     if (!selectedShop) return
     setShops((shops) => {
@@ -108,18 +136,25 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
           const new_shop = {
             label: shop.label,
             hinmokus: shop.hinmokus.map((h) => {
-              const new_hinmoku = {
-                ...h
-              }
+            
+              // const new_hinmoku: Hinmoku = {
+              //   hinsyu: h.hinsyu,
+              //   label: h.label,
+              //   num: ""
+              // }
+
+              // const new_hinmoku = Object.assign({}, h)
+              const new_hinmoku = h
+
               if (h.label === hin.label) {
-                const new_num = cb(h.num)
+                const new_num = cb(new_hinmoku.num)
                 console.log('new_num', new_num);
                 
-                h.num = new_num
-                console.log('h', h);
+                new_hinmoku.num = new_num
+                console.log('new_hinmoku', new_hinmoku);
               }
               
-              return h
+              return new_hinmoku
             }),
           }
           console.log('new_shop', new_shop);
@@ -170,6 +205,21 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   return (
     <div className="App p-5">
       <h1 className="text-3xl p-1 text-center">{title}</h1>
+
+      <label htmlFor="">{ testHin.label}</label>
+      <input type="text" name="" id="" className="text-black"
+        value={testHin.num} onChange={(e) => {
+          setTestHin({
+            label: testHin.label,
+            num: e.target.value
+          })
+        }} />
+      <button onClick={() => setTestHin(pre => {
+        return {
+          label: testHin.label,
+          num: "" + (+pre.num + 1)
+        }
+      })}>+1</button>
 
       {!selectedShop && (
         <div>
@@ -232,9 +282,9 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
 
             <div className="relative">
               <table className="hinmoku">
-                {selectedShop.hinmokus.map((hin) => {
+                {selectedShop.hinmokus.map((hin, index) => {
                   return (
-                    <tr>
+                    <tr key={index}>
                       <td className="border-solid border">{hin.label}</td>
                       <td className="border-solid border">
                         <input
@@ -253,7 +303,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
                         )}
                         {mode === "edit" && (
                           <>
-                            <button className="bg-green-900 p-2 m-1 rounded " onClick={() => handleAddNum(hin, 1)}>
+                            <button className="bg-green-900 p-2 m-1 rounded " onClick={()=>handleAddNum(hin, 1)}>
                               +1
                             </button>
                             <button className="bg-green-900 p-2 m-1 rounded " onClick={() => handleAddNum(hin, 5)}>
