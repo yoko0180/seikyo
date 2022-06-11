@@ -30,12 +30,13 @@ const OptionCheckbox: React.FC<{
 
 
 type Hinsyu = "jouon" | "chilled"
-
+type HinmokuState = "" | "fin"
 type Hinmoku = {
   id: string
   hinsyu: Hinsyu
   label: string
   num: string
+  state: HinmokuState
 }
 
 type Shop = {
@@ -61,7 +62,7 @@ const def_labels = [
 const def_labels_chilled = ["チルド", "トオカツ", "デリア", "三桂"]
 
 const makeHinmokus = (hinsyu: Hinsyu, labels: string[][]): Hinmoku[] =>
-  labels.map(([id, label]) => ({ id, hinsyu, label, num: "" }))
+  labels.map(([id, label]) => ({ id, hinsyu, label, num: "", state: "" }))
 
 const def_shop_names: string[][] = [
   ["", ""],
@@ -128,6 +129,34 @@ console.log('too')
         return shop
       }
       )
+    })
+  }
+
+  const changeSelectedShopHinmoku = (hin: Hinmoku, cb: (h: Hinmoku) => Hinmoku) => {
+    if (!selectedShop) return
+    setShops((shops) => {
+      return shops.map((shop) => {
+        if (shop.label !== selectedShop.label) return shop
+        const new_shop = {
+          ...shop,
+          hinmokus: shop.hinmokus.map((h) => {
+            if (h.label !== hin.label) return h 
+            const new_hinmoku = cb(h)
+            console.log('new_hinmoku', new_hinmoku);
+            return new_hinmoku
+          }),
+        }
+        return new_shop
+      })
+    })
+  }
+
+  const changeHinmokuState = (hin: Hinmoku, state: HinmokuState) => {
+    changeSelectedShopHinmoku(hin, (preHinmoku) => {
+      return {
+        ...preHinmoku,
+        state
+      }
     })
   }
   const setHinmokuNum = (hin: Hinmoku, cb: (pre: string) => string) => {
@@ -267,8 +296,16 @@ console.log('too')
       )}
 
       <div>shops: {shops.length}</div>
+      <div>mode: {mode}</div>
 
-      {/* 大学名一覧 */}
+      <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setMode("edit")}>
+        to edit mode
+      </button>
+      <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setMode("check")}>
+        to check mode
+      </button>
+
+  {/* 大学名一覧 */}
       {!selectedShop &&
         shops.map((shop) => {
           return (
@@ -311,11 +348,16 @@ console.log('too')
                       </td>
 
                       <td className="border-solid border">
-                        {mode === "check" && (
-                          <button className="bg-green-900 p-2 m-1 rounded " onClick={test}>
+                        {mode === "check" && (hin.state == "" && (
+                          <button className="bg-green-900 p-2 m-1 rounded " onClick={()=>changeHinmokuState(hin, "fin")}>
                             fin
                           </button>
-                        )}
+                        ) || hin.state === "fin" && (
+                          <>
+                          <span>ok!</span>
+                          <button className="bg-blue-300"  onClick={()=>changeHinmokuState(hin, "")}>cancel</button>
+                          </>
+                        ))}
                         {mode === "edit" && (
                           <>
                             <BtnAddNum hin={hin} num={1}></BtnAddNum>
