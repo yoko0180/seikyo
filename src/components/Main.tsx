@@ -27,6 +27,8 @@ const OptionCheckbox: React.FC<{
   </label>
 )
 
+
+
 type Hinsyu = "jouon" | "chilled"
 
 type Hinmoku = {
@@ -45,15 +47,15 @@ type Shop = {
 const def_labels = [
   ["tokatu", "トオカツ"],
   ["sinobu", "シノブ"],
-  // "酵母パン",
-  // "第一パン",
-  // "敷島製パン",
-  // "伊藤パン",
-  // "フジパン",
-  // "神戸屋",
-  // "Kアイス",
-  // "ナシオ",
-  // "国分常温",
+  ["koubo", "酵母パン"],
+  ["daiiti", "第一パン"],
+  ["sikijima", "敷島製パン"],
+  ["ito", "伊藤パン"],
+  ["fuji", "フジパン"],
+  ["koube", "神戸屋"],
+  ["kice", "Kアイス"],
+  ["nasio", "ナシオ"],
+  ["kokubu", "国分常温"],
 ]
 
 const def_labels_chilled = ["チルド", "トオカツ", "デリア", "三桂"]
@@ -204,6 +206,15 @@ console.log('too')
     setInputShopName(name[1])
   }, [selectShopName])
 
+  const BtnAddNum: React.FC<{
+  hin: Hinmoku
+  num: number
+}> = ({ hin, num, children }) => (
+<button className="bg-green-900 p-2 m-1 rounded " onClick={()=>handleAddNum(hin, num)}>
+                              {num >= 0 ? "+" : ""}{num}
+                            </button>
+)
+
   return (
     <div className="App p-5">
       <h1 className="text-3xl p-1 text-center">{title}</h1>
@@ -289,7 +300,7 @@ console.log('too')
                 {shops.find(s => s.id === selectedShop.id)!.hinmokus.map((hin, index) => {
                   return (
                     <tr key={hin.id}>
-                      <td className="border-solid border">{hin.label}({hin.id})</td>
+                      <td className="border-solid border">{hin.label}</td>
                       <td className="border-solid border">
                         <input
                           type="number"
@@ -307,12 +318,10 @@ console.log('too')
                         )}
                         {mode === "edit" && (
                           <>
-                            <button className="bg-green-900 p-2 m-1 rounded " onClick={()=>handleAddNum(hin, 1)}>
-                              +1
-                            </button>
-                            <button className="bg-green-900 p-2 m-1 rounded " onClick={() => handleAddNum(hin, 5)}>
-                              +5
-                            </button>
+                            <BtnAddNum hin={hin} num={1}></BtnAddNum>
+                            <BtnAddNum hin={hin} num={5}></BtnAddNum>
+                            <BtnAddNum hin={hin} num={-1}></BtnAddNum>
+                            <BtnAddNum hin={hin} num={-5}></BtnAddNum>
                           </>
                         )}
                       </td>
