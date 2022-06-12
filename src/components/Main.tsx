@@ -96,6 +96,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const [shops, setShops] = useState<Shop[]>([])
   const [selectedShop, setSelectedShop] = useState<Shop | null>(null)
   const [mode, setMode] = useState<Mode>("edit")
+  const [showOptional, setShowOptional] = useState(false)
 
   const history = useHistory()
   const title = "生協"
@@ -291,9 +292,13 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
                     <>
                       <BtnAddNum hin={hin} num={1}></BtnAddNum>
                       <BtnAddNum hin={hin} num={5}></BtnAddNum>
-                      <BtnAddNum hin={hin} num={-1}></BtnAddNum>
-                      <BtnAddNum hin={hin} num={-5}></BtnAddNum>
-                      <BtnClearNum hin={hin}></BtnClearNum>
+                      {!showOptional && (
+                        <>
+                          <BtnAddNum hin={hin} num={-1}></BtnAddNum>
+                          <BtnAddNum hin={hin} num={-5}></BtnAddNum>
+                        </>
+                      )}
+                      {showOptional && <BtnClearNum hin={hin}></BtnClearNum>}
                     </>
                   )}
                 </td>
@@ -391,13 +396,24 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
             </div>
 
             <div id="table-area" className="relative mt-9">
+              <div className="m-5">
+                <label htmlFor="">
+                  show optional
+                  <input
+                    type="checkbox"
+                    name=""
+                    id=""
+                    checked={showOptional}
+                    onChange={(e) => setShowOptional(e.target.checked)}
+                  />
+                </label>
+              </div>
               <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setMode("edit")}>
                 to edit mode
               </button>
               <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setMode("check")}>
                 to check mode
               </button>
-
               <TableHinmokus
                 label="常温"
                 hinmokus={selectedHinmokus().filter((h) => h.hinsyu === "jouon")}
@@ -411,7 +427,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
         </div>
       )}
 
-      <div className="three wide column text-left">© 2022 y</div>
+      <div className="three wide column text-left mt-5">© 2022</div>
     </div>
   )
 }
