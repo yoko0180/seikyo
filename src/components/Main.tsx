@@ -237,7 +237,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
         <div>
           {/* 大学名プルダウン */}
           <select
-            className="text-black p-3 m-3"
+            className="text-black p-3 my-3"
             value={selectShopName}
             onChange={(e) => {
               const value = e.target.value
@@ -263,7 +263,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
             value={inputShopName}
             onChange={(e) => setInputShopName(e.target.value)}
           />
-          <button className="bg-green-900 p-2 m-1 rounded " onClick={() => addShop(inputShopName)}>
+          <button className="bg-green-900 p-2 my-1 rounded " onClick={() => addShop(inputShopName)}>
             大学追加
           </button>
           <div>shops: {shops.length}</div>
