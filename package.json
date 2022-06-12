@@ -31,6 +31,7 @@
     "build:react": "react-scripts build",
     "build:404": "copy build\\index.html build\\404.html",
     "deploy": "gh-pages -d build",
+    "build-deploy": "npm run build:react && npm run deploy",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
