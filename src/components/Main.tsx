@@ -252,6 +252,11 @@ const selectedHinmokus = () => {
   return hinmokus
 }
 
+const selectedTotalNum = () => {
+  if (!selectedShop) return 0
+  const hinmokus = shops.find(s => s.id === selectedShop.id)!.hinmokus
+  return hinmokus.filter(h => h.num !== "").map(h => h.num).reduce( (a, b) => +a + +b, 0)
+}
   return (
     <div className="App p-5">
       <h1 className="text-3xl p-1 text-center">{title}</h1>
@@ -331,7 +336,7 @@ const selectedHinmokus = () => {
           <>
             <div className="relative">
               <div className="opacity-100 z-50 text-2xl fixed  top-0 left-0 right-0 bg-blue-900 p-3">
-                <div>{selectedShop.label}</div>
+                <div>{selectedShop.label}({selectedTotalNum()})</div>
                 <button className="right-0 float-right" onClick={() => setSelectedShop(null)}>
                   return
                 </button>
