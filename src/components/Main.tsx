@@ -377,7 +377,7 @@ console.log('too')
         </div>
       )}
 
-      <div className="three wide column text-left">© 2022 yokoyama</div>
+      <div className="three wide column text-left">© 2022 y</div>
     </div>
   )
 }
