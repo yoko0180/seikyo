@@ -3,7 +3,6 @@ import { useHistory } from "react-router"
 // import json from './commands.json'
 // import Hinmoku from "./Hinmoku"
 
-
 // function getStorage(key: string): string | null {
 //   try {
 //     return localStorage.getItem(key)
@@ -26,8 +25,6 @@ const OptionCheckbox: React.FC<{
     <span>{children}</span>
   </label>
 )
-
-
 
 type Hinsyu = "jouon" | "chilled"
 type HinmokuState = "" | "fin"
@@ -90,47 +87,12 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const [shops, setShops] = useState<Shop[]>([])
   const [selectedShop, setSelectedShop] = useState<Shop | null>(null)
   const [mode, setMode] = useState<Mode>("edit")
-  const [testHin , setTestHin] = useState({label: "test-hin", num: ""})
 
   const history = useHistory()
   const title = "生協"
   useEffect(() => {
     document.title = title
   }, [history.location, title])
-
-  const test = () => {}
-
-  const testAdd = () => {
-    if (!selectedShop) return
-
-    setShops((shops) => {
-      return shops.map((shop) => {
-        if (shop.label === selectedShop.label) {
-
-          return {
-            ...shop,
-            hinmokus: shop.hinmokus.map(hin => {
-              if (hin.label === "トオカツ") {
-console.log('too')
-
-                const pre = hin.num === "" ? 0 : +hin.num
-                
-                console.log('pre ', pre);
-                
-             return {
-                  ...hin,
-                  num: "" + (pre + 1)
-                }
-              }
-              return hin
-            })
-          }
-        }
-        return shop
-      }
-      )
-    })
-  }
 
   const changeSelectedShopHinmoku = (hin: Hinmoku, cb: (h: Hinmoku) => Hinmoku) => {
     if (!selectedShop) return
@@ -140,9 +102,9 @@ console.log('too')
         const new_shop = {
           ...shop,
           hinmokus: shop.hinmokus.map((h) => {
-            if (h.label !== hin.label) return h 
+            if (h.label !== hin.label) return h
             const new_hinmoku = cb(h)
-            console.log('new_hinmoku', new_hinmoku);
+            console.log("new_hinmoku", new_hinmoku)
             return new_hinmoku
           }),
         }
@@ -155,48 +117,16 @@ console.log('too')
     changeSelectedShopHinmoku(hin, (preHinmoku) => {
       return {
         ...preHinmoku,
-        state
+        state,
       }
     })
   }
   const setHinmokuNum = (hin: Hinmoku, cb: (pre: string) => string) => {
-    if (!selectedShop) return
-    setShops((shops) => {
-      return shops.map((shop) => {
-        if (shop.label === selectedShop.label) {
-          const new_shop = {
-            ...shop,
-            hinmokus: shop.hinmokus.map((h) => {
-            
-              // const new_hinmoku: Hinmoku = {
-              //   hinsyu: h.hinsyu,
-              //   label: h.label,
-              //   num: ""
-              // }
-
-              // const new_hinmoku = Object.assign({}, h)
-              // const new_hinmoku = h
-              const new_hinmoku = {...h}
-
-              if (h.label === hin.label) {
-                const new_num = cb(new_hinmoku.num)
-                console.log('new_num', new_num);
-                
-                new_hinmoku.num = new_num
-                console.log('new_hinmoku', new_hinmoku);
-              }
-              
-              return new_hinmoku
-            }),
-          }
-          console.log('new_shop', new_shop);
-          console.log('a', new_shop.hinmokus[0])
-          
-          
-          return new_shop
-        }
-        return shop
-      })
+    changeSelectedShopHinmoku(hin, (preHinmoku) => {
+      return {
+        ...preHinmoku,
+        num: cb(preHinmoku.num),
+      }
     })
   }
   // React.InputHTMLAttributes<HTMLInputElement>.onChange?: React.ChangeEventHandler<HTMLInputElement> | undefined
@@ -206,11 +136,11 @@ console.log('too')
 
   const handleAddNum = (hin: Hinmoku, num: number) => {
     setHinmokuNum(hin, (pre: string) => {
-      console.log('pre', pre, 'num', num);
-      const _pre = !pre ? 0 : (+pre)
-      const new_value = "" + (_pre + num) 
-      console.log('new_value', new_value);
-      
+      console.log("pre", pre, "num", num)
+      const _pre = !pre ? 0 : +pre
+      const new_value = "" + (_pre + num)
+      console.log("new_value", new_value)
+
       return new_value
     })
   }
@@ -237,44 +167,34 @@ console.log('too')
   }, [selectShopName])
 
   const BtnAddNum: React.FC<{
-  hin: Hinmoku
-  num: number
-}> = ({ hin, num, children }) => (
-<button className="bg-green-900 p-2 m-1 rounded " onClick={()=>handleAddNum(hin, num)}>
-                              {num >= 0 ? "+" : ""}{num}
-                            </button>
-)
+    hin: Hinmoku
+    num: number
+  }> = ({ hin, num, children }) => (
+    <button className="bg-green-900 p-2 m-1 rounded " onClick={() => handleAddNum(hin, num)}>
+      {num >= 0 ? "+" : ""}
+      {num}
+    </button>
+  )
 
-const selectedHinmokus = () => {
-  if (!selectedShop) return []
-  const hinmokus = shops.find(s => s.id === selectedShop.id)!.hinmokus
-  if (mode === "check") return hinmokus.filter(h => h.num !== "")
-  return hinmokus
-}
+  const selectedHinmokus = () => {
+    if (!selectedShop) return []
+    const hinmokus = shops.find((s) => s.id === selectedShop.id)!.hinmokus
+    if (mode === "check") return hinmokus.filter((h) => h.num !== "")
+    return hinmokus
+  }
 
-const selectedTotalNum = () => {
-  if (!selectedShop) return 0
-  const hinmokus = shops.find(s => s.id === selectedShop.id)!.hinmokus
-  return hinmokus.filter(h => h.num !== "").map(h => h.num).reduce( (a, b) => +a + +b, 0)
-}
+  const selectedTotalNum = () => {
+    if (!selectedShop) return 0
+    const hinmokus = shops.find((s) => s.id === selectedShop.id)!.hinmokus
+    return hinmokus
+      .filter((h) => h.num !== "")
+      .map((h) => h.num)
+      .reduce((a, b) => +a + +b, 0)
+  }
   return (
     <div className="App p-5">
       <h1 className="text-3xl p-1 text-center">{title}</h1>
 
-      <label htmlFor="">{ testHin.label}</label>
-      <input type="text" name="" id="" className="text-black"
-        value={testHin.num} onChange={(e) => {
-          setTestHin({
-            label: testHin.label,
-            num: e.target.value
-          })
-        }} />
-      <button onClick={() => setTestHin(pre => {
-        return {
-          label: testHin.label,
-          num: "" + (+pre.num + 1)
-        }
-      })}>+1</button>
 
       {!selectedShop && (
         <div>
@@ -290,7 +210,11 @@ const selectedTotalNum = () => {
             }}
           >
             {def_shop_names.map((name) => {
-              return <option value={name[0]} key={name[0]}>{name[1]}</option>
+              return (
+                <option value={name[0]} key={name[0]}>
+                  {name[1]}
+                </option>
+              )
             })}
           </select>
 
@@ -309,16 +233,20 @@ const selectedTotalNum = () => {
       )}
 
       <div>shops: {shops.length}</div>
-      <div>mode: {mode}</div>
+      {/* <div>mode: {mode}</div> */}
 
-      <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setMode("edit")}>
-        to edit mode
-      </button>
-      <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setMode("check")}>
-        to check mode
-      </button>
+      {selectedShop && (
+        <>
+          <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setMode("edit")}>
+            to edit mode
+          </button>
+          <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setMode("check")}>
+            to check mode
+          </button>
+        </>
+      )}
 
-  {/* 大学名一覧 */}
+      {/* 大学名一覧 */}
       {!selectedShop &&
         shops.map((shop) => {
           return (
@@ -336,7 +264,9 @@ const selectedTotalNum = () => {
           <>
             <div className="relative">
               <div className="opacity-100 z-50 text-2xl fixed  top-0 left-0 right-0 bg-blue-900 p-3">
-                <div>{selectedShop.label}({selectedTotalNum()})</div>
+                <div>
+                  {selectedShop.label}({selectedTotalNum()})
+                </div>
                 <button className="right-0 float-right" onClick={() => setSelectedShop(null)}>
                   return
                 </button>
@@ -346,46 +276,50 @@ const selectedTotalNum = () => {
             <div className="relative">
               <table className="hinmoku">
                 <tbody>
+                  {selectedHinmokus().map((hin, index) => {
+                    return (
+                      <tr key={hin.id}>
+                        <td className="border-solid border">{hin.label}</td>
+                        <td className="border-solid border">
+                          <input
+                            type="number"
+                            onChange={(e) => handleChangeHinmokuNum(hin, e.target.value)}
+                            className="num border p-3 rounded text-gray-900"
+                            value={hin.num}
+                          />
+                        </td>
 
-                  {
-                    
-                    selectedHinmokus().map((hin, index) => {
-                  return (
-                    <tr key={hin.id}>
-                      <td className="border-solid border">{hin.label}</td>
-                      <td className="border-solid border">
-                        <input
-                          type="number"
-                          onChange={(e)=>handleChangeHinmokuNum(hin, e.target.value)}
-                          className="num border p-3 rounded text-gray-900"
-                          value={hin.num}
-                        />
-                      </td>
-
-                      <td className="border-solid border">
-                        {mode === "check" && (hin.state == "" && (
-                          <button className="bg-green-900 p-2 m-1 rounded " onClick={()=>changeHinmokuState(hin, "fin")}>
-                            fin
-                          </button>
-                        ) || hin.state === "fin" && (
-                          <>
-                          <span>ok!</span>
-                          <button className="bg-blue-300"  onClick={()=>changeHinmokuState(hin, "")}>cancel</button>
-                          </>
-                        ))}
-                        {mode === "edit" && (
-                          <>
-                            <BtnAddNum hin={hin} num={1}></BtnAddNum>
-                            <BtnAddNum hin={hin} num={5}></BtnAddNum>
-                            <BtnAddNum hin={hin} num={-1}></BtnAddNum>
-                            <BtnAddNum hin={hin} num={-5}></BtnAddNum>
-                          </>
-                        )}
-                      </td>
-                    </tr>
-                  )
-                })}
-                                </tbody>
+                        <td className="border-solid border">
+                          {mode === "check" &&
+                            ((hin.state == "" && (
+                              <button
+                                className="bg-green-900 p-2 m-1 rounded "
+                                onClick={() => changeHinmokuState(hin, "fin")}
+                              >
+                                fin
+                              </button>
+                            )) ||
+                              (hin.state === "fin" && (
+                                <>
+                                  <span>ok!</span>
+                                  <button className="bg-blue-300" onClick={() => changeHinmokuState(hin, "")}>
+                                    cancel
+                                  </button>
+                                </>
+                              )))}
+                          {mode === "edit" && (
+                            <>
+                              <BtnAddNum hin={hin} num={1}></BtnAddNum>
+                              <BtnAddNum hin={hin} num={5}></BtnAddNum>
+                              <BtnAddNum hin={hin} num={-1}></BtnAddNum>
+                              <BtnAddNum hin={hin} num={-5}></BtnAddNum>
+                            </>
+                          )}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
               </table>
             </div>
           </>
