@@ -63,7 +63,7 @@ const def_labels_chilled = [
   ["c-chilled", "チルド"],
   ["c-tokatu", "トオカツ"],
   ["c-delia", "デリア"],
-  ["c-sankei", "三桂"]
+  ["c-sankei", "三桂"],
 ]
 
 const makeHinmokus = (hinsyu: Hinsyu, labels: string[][]): Hinmoku[] =>
@@ -223,7 +223,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     hin: Hinmoku
   }> = ({ hin, children }) => (
     <button className="bg-blue-500 p-2 m-1 rounded float-right" onClick={() => clearHinmokuNum(hin)}>
-    C
+      C
     </button>
   )
 
@@ -248,6 +248,62 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
       .map((h) => h.num)
       .reduce((a, b) => +a + +b, 0)
   }
+
+  const TableHinmokus: React.FC<{
+    label: string
+    hinmokus: Hinmoku[]
+  }> = ({ label, hinmokus, children }) => (
+    <div className="">
+      <div className="mt-2">
+        {label}
+      </div>
+      <table className="hinmoku">
+        <tbody>
+          {hinmokus.map((hin, index) => {
+            return (
+              <tr key={hin.id}>
+                <td className="border-solid border">{hin.label}</td>
+                <td className="border-solid border">
+                  <input
+                    type="number"
+                    onChange={(e) => handleChangeHinmokuNum(hin, e.target.value)}
+                    className="num border p-3 rounded text-gray-900"
+                    value={hin.num}
+                  />
+                </td>
+
+                <td className="border-solid border">
+                  {mode === "check" &&
+                    ((hin.state == "" && (
+                      <button className="bg-green-900 p-2 m-1 rounded " onClick={() => changeHinmokuState(hin, "fin")}>
+                        fin
+                      </button>
+                    )) ||
+                      (hin.state === "fin" && (
+                        <>
+                          <span>ok!</span>
+                          <button className="bg-blue-300" onClick={() => changeHinmokuState(hin, "")}>
+                            cancel
+                          </button>
+                        </>
+                      )))}
+                  {mode === "edit" && (
+                    <>
+                      <BtnAddNum hin={hin} num={1}></BtnAddNum>
+                      <BtnAddNum hin={hin} num={5}></BtnAddNum>
+                      <BtnAddNum hin={hin} num={-1}></BtnAddNum>
+                      <BtnAddNum hin={hin} num={-5}></BtnAddNum>
+                      <BtnClearNum hin={hin}></BtnClearNum>
+                    </>
+                  )}
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
+  )
 
   return (
     <div className="App p-5">
@@ -341,54 +397,15 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
               <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setMode("check")}>
                 to check mode
               </button>
-              <table className="hinmoku">
-                <tbody>
-                  {selectedHinmokus().map((hin, index) => {
-                    return (
-                      <tr key={hin.id}>
-                        <td className="border-solid border">{hin.label}</td>
-                        <td className="border-solid border">
-                          <input
-                            type="number"
-                            onChange={(e) => handleChangeHinmokuNum(hin, e.target.value)}
-                            className="num border p-3 rounded text-gray-900"
-                            value={hin.num}
-                          />
-                        </td>
 
-                        <td className="border-solid border">
-                          {mode === "check" &&
-                            ((hin.state == "" && (
-                              <button
-                                className="bg-green-900 p-2 m-1 rounded "
-                                onClick={() => changeHinmokuState(hin, "fin")}
-                              >
-                                fin
-                              </button>
-                            )) ||
-                              (hin.state === "fin" && (
-                                <>
-                                  <span>ok!</span>
-                                  <button className="bg-blue-300" onClick={() => changeHinmokuState(hin, "")}>
-                                    cancel
-                                  </button>
-                                </>
-                              )))}
-                          {mode === "edit" && (
-                            <>
-                              <BtnAddNum hin={hin} num={1}></BtnAddNum>
-                              <BtnAddNum hin={hin} num={5}></BtnAddNum>
-                              <BtnAddNum hin={hin} num={-1}></BtnAddNum>
-                              <BtnAddNum hin={hin} num={-5}></BtnAddNum>
-                              <BtnClearNum hin={hin}></BtnClearNum>
-                            </>
-                          )}
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
+              <TableHinmokus
+                label="常温"
+                hinmokus={selectedHinmokus().filter((h) => h.hinsyu === "jouon")}
+              ></TableHinmokus>
+              <TableHinmokus
+                label="チルド"
+                hinmokus={selectedHinmokus().filter((h) => h.hinsyu === "chilled")}
+              ></TableHinmokus>
             </div>
           </>
         </div>
