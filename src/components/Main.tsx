@@ -3,18 +3,21 @@ import { useHistory } from "react-router"
 // import json from './commands.json'
 // import Hinmoku from "./Hinmoku"
 
-// function getStorage(key: string): string | null {
-//   try {
-//     return localStorage.getItem(key)
-//   } catch (error) {
-//     return null
-//   }
-// }
-// function setStorage(key: string, value: string): void {
-//   try {
-//     localStorage.setItem(key, value)
-//   } catch (error) {}
-// }
+function load(key: string): any {
+  try {
+    const ret = localStorage.getItem(key)
+    if (typeof ret === "string") return JSON.parse(ret)
+    return null
+  } catch (error) {
+    return null
+  }
+}
+function save(key: string, value: any): void {
+  console.log("save...");
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+  } catch (error) {}
+}
 
 const OptionCheckbox: React.FC<{
   onChange: React.ChangeEventHandler<HTMLInputElement>
@@ -82,6 +85,7 @@ const def_shop_names: string[][] = [
 type Mode = "edit" | "check"
 
 const Main: React.FC<{ lang: string }> = ({ lang }) => {
+  const STORAGE_KEY = "shops"
   const [inputShopName, setInputShopName] = useState("")
   const [selectShopName, setSelectShopName] = useState("")
   const [shops, setShops] = useState<Shop[]>([])
@@ -90,10 +94,32 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
 
   const history = useHistory()
   const title = "生協"
+
+  // 初期処理
+  useEffect(() => {
+    console.log('load...');
+    
+    const value = load(STORAGE_KEY)    
+    console.log('value', value);
+    
+    if (value === undefined || value === null) return
+    try {
+      setShops(value)
+    } catch (e) {
+      console.log('setShop error on load value.')
+    }
+  }, [])
+
   useEffect(() => {
     document.title = title
   }, [history.location, title])
 
+  // データ更新があったらセーブする
+  useEffect(() => {
+    save(STORAGE_KEY, shops)
+  }, [shops])
+
+  // 指定品目の更新
   const changeSelectedShopHinmoku = (hin: Hinmoku, cb: (h: Hinmoku) => Hinmoku) => {
     if (!selectedShop) return
     setShops((shops) => {
