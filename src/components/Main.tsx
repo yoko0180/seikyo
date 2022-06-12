@@ -244,6 +244,13 @@ console.log('too')
                             </button>
 )
 
+const selectedHinmokus = () => {
+  if (!selectedShop) return []
+  const hinmokus = shops.find(s => s.id === selectedShop.id)!.hinmokus
+  if (mode === "check") return hinmokus.filter(h => h.num !== "")
+  return hinmokus
+}
+
   return (
     <div className="App p-5">
       <h1 className="text-3xl p-1 text-center">{title}</h1>
@@ -334,7 +341,9 @@ console.log('too')
               <table className="hinmoku">
                 <tbody>
 
-                {shops.find(s => s.id === selectedShop.id)!.hinmokus.map((hin, index) => {
+                  {
+                    
+                    selectedHinmokus().map((hin, index) => {
                   return (
                     <tr key={hin.id}>
                       <td className="border-solid border">{hin.label}</td>
