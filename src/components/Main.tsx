@@ -255,7 +255,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     hinmokus: Hinmoku[]
   }> = ({ label, hinmokus, children }) => (
     <div className="">
-      <div className="mt-2">
+      <div className="mt-2 text-2xl">
         {label}({hinmokusTotal(hinmokus)})
       </div>
       <table className="hinmoku">
@@ -265,12 +265,15 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
               <tr key={hin.id}>
                 <td className="border-solid border">{hin.label}</td>
                 <td className="border-solid border">
-                  <input
-                    type="number"
-                    onChange={(e) => handleChangeHinmokuNum(hin, e.target.value)}
-                    className="num border p-3 rounded text-gray-900"
-                    value={hin.num}
-                  />
+                  {mode === "edit" && (
+                    <input
+                      type="number"
+                      onChange={(e) => handleChangeHinmokuNum(hin, e.target.value)}
+                      className="num border p-3 rounded text-gray-900"
+                      value={hin.num}
+                    />
+                  )}
+                  {mode === "check" && <span className="p-3 text-xl">{hin.num}</span>}
                 </td>
 
                 <td className="border-solid border">
@@ -283,7 +286,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
                       (hin.state === "fin" && (
                         <>
                           <span>ok!</span>
-                          <button className="bg-blue-300 mx-2" onClick={() => changeHinmokuState(hin, "")}>
+                          <button className="bg-blue-300 m-3" onClick={() => changeHinmokuState(hin, "")}>
                             cancel
                           </button>
                         </>
