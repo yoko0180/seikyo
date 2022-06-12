@@ -133,7 +133,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
         const new_shop = {
           ...shop,
           hinmokus: shop.hinmokus.map((h) => {
-            if (h.label !== hin.label) return h
+            if (h.id !== hin.id) return h
             const new_hinmoku = cb(h)
             console.log("new_hinmoku", new_hinmoku)
             return new_hinmoku
@@ -234,19 +234,19 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     return hinmokus
   }
 
-  const selectedTotalNum = () => {
-    if (!selectedShop) return 0
-    const hinmokus = shops.find((s) => s.id === selectedShop.id)!.hinmokus
+  const hinmokusTotal = (hinmokus: Hinmoku[]) => {
     return hinmokus
       .filter((h) => h.num !== "")
       .map((h) => h.num)
       .reduce((a, b) => +a + +b, 0)
   }
+  const selectedTotalNum = () => {
+    if (!selectedShop) return 0
+    const hinmokus = shops.find((s) => s.id === selectedShop.id)!.hinmokus
+    return hinmokusTotal(hinmokus)
+  }
   const shopHinmokuTotal = (shop: Shop) => {
-    return shop.hinmokus
-      .filter((h) => h.num !== "")
-      .map((h) => h.num)
-      .reduce((a, b) => +a + +b, 0)
+    return hinmokusTotal(shop.hinmokus)
   }
 
   const TableHinmokus: React.FC<{
@@ -255,7 +255,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   }> = ({ label, hinmokus, children }) => (
     <div className="">
       <div className="mt-2">
-        {label}
+        {label}({hinmokusTotal(hinmokus)})
       </div>
       <table className="hinmoku">
         <tbody>
