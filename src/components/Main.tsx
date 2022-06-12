@@ -176,7 +176,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     if (!label) return
 
     // すでに追加済み大学は処理キャンセル
-    if (shops.find(s => s.label === label)) return
+    if (shops.find((s) => s.label === label)) return
 
     const new_shops = shops.concat([
       {
@@ -222,6 +222,13 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
       .map((h) => h.num)
       .reduce((a, b) => +a + +b, 0)
   }
+  const shopHinmokuTotal = (shop: Shop) => {
+    return shop.hinmokus
+      .filter((h) => h.num !== "")
+      .map((h) => h.num)
+      .reduce((a, b) => +a + +b, 0)
+  }
+
   return (
     <div className="App p-5">
       <h1 className="text-3xl p-1 text-center">{title}</h1>
@@ -259,22 +266,14 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
           <button className="bg-green-900 p-2 m-1 rounded " onClick={() => addShop(inputShopName)}>
             大学追加
           </button>
+          <div>shops: {shops.length}</div>
+          <div>total: {shops.map((s) => shopHinmokuTotal(s)).reduce((a, b) => a + b, 0)}</div>
         </div>
       )}
 
-      <div>shops: {shops.length}</div>
       {/* <div>mode: {mode}</div> */}
 
-      {selectedShop && (
-        <>
-          <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setMode("edit")}>
-            to edit mode
-          </button>
-          <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setMode("check")}>
-            to check mode
-          </button>
-        </>
-      )}
+      {selectedShop && <></>}
 
       {/* 大学名一覧 */}
       <div id="shops-list">
@@ -283,10 +282,17 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
             return (
               <div key={shop.id}>
                 <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setSelectedShop(shop)}>
-                  {shop.label}
+                  {shop.label}(
+                  {shop.hinmokus
+                    .filter((h) => h.num !== "")
+                    .map((h) => h.num)
+                    .reduce((a, b) => +a + +b, 0)}
+                  )
                 </button>
-                <button className="bg-red-900 p-2 m-1 rounded float-right"
-                  onClick={() => setShops(shops => shops.filter(s => s.id !== shop.id))}>
+                <button
+                  className="bg-red-900 p-2 m-1 rounded float-right"
+                  onClick={() => setShops((shops) => shops.filter((s) => s.id !== shop.id))}
+                >
                   delete
                 </button>
               </div>
@@ -308,7 +314,13 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
               </div>
             </div>
 
-            <div className="relative">
+            <div className="relative mt-5">
+              <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setMode("edit")}>
+                to edit mode
+              </button>
+              <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setMode("check")}>
+                to check mode
+              </button>
               <table className="hinmoku">
                 <tbody>
                   {selectedHinmokus().map((hin, index) => {
