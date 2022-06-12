@@ -74,14 +74,14 @@ const def_shop_names: string[][] = [
   ["keiou_sinano", "慶応信濃町"],
   ["keiou_mita", "慶応義塾大学 三田購買部"],
   ["keiou_kyouritu", "慶応義塾大学芝共立キャンパス"],
-  // "慶應女子高",
-  // "日本赤十字看護大学",
-  // "早稲田twins",
-  // "明治学院白金",
-  // "星薬科大学",
-  // "海洋大学",
-  // "理科大学 神楽坂店",
-  // "法政大学 市ヶ谷購買書籍部",
+  ["keiou_josi", "慶應女子高"],
+  ["kango", "日本赤十字看護大学"],
+  ["twins", "早稲田twins"],
+  ["meiji_sirogane", "明治学院白金"],
+  ["hosiyakka", "星薬科大学"],
+  ["kaiyou", "海洋大学"],
+  ["rika", "理科大学 神楽坂店"],
+  ["housei_iti", "法政大学 市ヶ谷購買書籍部"],
 ]
 
 // 編集モード：品目の数量編集するモード
@@ -315,11 +315,14 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
 
   return (
     <div className="App p-5">
-      <h1 className="text-3xl p-1 text-center">{title}</h1>
+      <h1 className="text-3xl p-1 text-center" id="title">{title}</h1>
 
       {!selectedShop && (
-        <div>
+        <div id="add-shop-area" className="border rounded p-2">
           {/* 大学名プルダウン */}
+          <div className="">
+            大学の追加
+          </div>
           <select
             className="text-black p-3 my-3"
             value={selectShopName}
@@ -350,8 +353,6 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
           <button className="bg-green-900 p-2 my-1 rounded " onClick={() => addShop(inputShopName)}>
             大学追加
           </button>
-          <div>shops: {shops.length}</div>
-          <div>total: {shops.map((s) => shopHinmokuTotal(s)).reduce((a, b) => a + b, 0)}</div>
         </div>
       )}
 
@@ -360,11 +361,22 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
       {selectedShop && <></>}
 
       {/* 大学名一覧 */}
-      <div id="shops-list">
-        {!selectedShop &&
+      {!selectedShop && (
+
+      <div id="shops-list" className="border rounded my-2 py-2">
+        <div className="p-2">
+          <span>
+
+          大学一覧({shops.length})
+          </span>
+          <span className="float-right">
+            total: {shops.map((s) => shopHinmokuTotal(s)).reduce((a, b) => a + b, 0)}
+          </span>
+        </div>
+        {
           shops.map((shop) => {
             return (
-              <div key={shop.id}>
+              <div key={shop.id} className="my-2">
                 <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setSelectedShop(shop)}>
                   {shop.label}(
                   {shop.hinmokus
@@ -377,12 +389,15 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
                   className="bg-red-900 p-2 m-1 rounded float-right"
                   onClick={() => setShops((shops) => shops.filter((s) => s.id !== shop.id))}
                 >
-                  delete
+                  del
                 </button>
               </div>
             )
           })}
       </div>
+
+      )}
+
       {/* 選択された大学 */}
       {selectedShop && (
         <div>
