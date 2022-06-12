@@ -283,7 +283,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
                       (hin.state === "fin" && (
                         <>
                           <span>ok!</span>
-                          <button className="bg-blue-300" onClick={() => changeHinmokuState(hin, "")}>
+                          <button className="bg-blue-300 mx-2" onClick={() => changeHinmokuState(hin, "")}>
                             cancel
                           </button>
                         </>
