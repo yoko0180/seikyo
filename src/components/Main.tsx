@@ -13,7 +13,7 @@ function load(key: string): any {
   }
 }
 function save(key: string, value: any): void {
-  console.log("save...");
+  console.log("save...")
   try {
     localStorage.setItem(key, JSON.stringify(value))
   } catch (error) {}
@@ -97,16 +97,16 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
 
   // 初期処理
   useEffect(() => {
-    console.log('load...');
-    
-    const value = load(STORAGE_KEY)    
-    console.log('value', value);
-    
+    console.log("load...")
+
+    const value = load(STORAGE_KEY)
+    console.log("value", value)
+
     if (value === undefined || value === null) return
     try {
       setShops(value)
     } catch (e) {
-      console.log('setShop error on load value.')
+      console.log("setShop error on load value.")
     }
   }, [])
 
@@ -173,6 +173,11 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const addShop = (label: string) => {
     console.log("addShop", label)
 
+    if (!label) return
+
+    // すでに追加済み大学は処理キャンセル
+    if (shops.find(s => s.label === label)) return
+
     const new_shops = shops.concat([
       {
         id: "shop_" + Date.now(),
@@ -220,7 +225,6 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   return (
     <div className="App p-5">
       <h1 className="text-3xl p-1 text-center">{title}</h1>
-
 
       {!selectedShop && (
         <div>
@@ -273,17 +277,22 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
       )}
 
       {/* 大学名一覧 */}
-      {!selectedShop &&
-        shops.map((shop) => {
-          return (
-            <div key={shop.id}>
-              <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setSelectedShop(shop)}>
-                {shop.label}
-              </button>
-            </div>
-          )
-        })}
-
+      <div id="shops-list">
+        {!selectedShop &&
+          shops.map((shop) => {
+            return (
+              <div key={shop.id}>
+                <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setSelectedShop(shop)}>
+                  {shop.label}
+                </button>
+                <button className="bg-red-900 p-2 m-1 rounded float-right"
+                  onClick={() => setShops(shops => shops.filter(s => s.id !== shop.id))}>
+                  delete
+                </button>
+              </div>
+            )
+          })}
+      </div>
       {/* 選択された大学 */}
       {selectedShop && (
         <div>
