@@ -155,6 +155,14 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
       }
     })
   }
+  const clearHinmokuNum = (hin: Hinmoku) => {
+    changeSelectedShopHinmoku(hin, (preHinmoku) => {
+      return {
+        ...preHinmoku,
+        num: "",
+      }
+    })
+  }
   // React.InputHTMLAttributes<HTMLInputElement>.onChange?: React.ChangeEventHandler<HTMLInputElement> | undefined
   const handleChangeHinmokuNum = (hin: Hinmoku, value: string) => {
     setHinmokuNum(hin, (pre) => value)
@@ -204,6 +212,13 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
     <button className="bg-green-900 p-2 m-1 rounded " onClick={() => handleAddNum(hin, num)}>
       {num >= 0 ? "+" : ""}
       {num}
+    </button>
+  )
+  const BtnClearNum: React.FC<{
+    hin: Hinmoku
+  }> = ({ hin, children }) => (
+    <button className="bg-blue-500 p-2 m-1 rounded " onClick={() => clearHinmokuNum(hin)}>
+    C
     </button>
   )
 
@@ -304,7 +319,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
         <div>
           <>
             <div className="relative">
-              <div className="opacity-100 z-50 text-2xl fixed  top-0 left-0 right-0 bg-blue-900 p-3">
+              <div className="opacity-100 z-50 text-xl fixed  top-0 left-0 right-0 bg-blue-900 p-3">
                 <div>
                   {selectedShop.label}({selectedTotalNum()})
                 </div>
@@ -314,7 +329,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
               </div>
             </div>
 
-            <div className="relative mt-5">
+            <div id="table-area" className="relative mt-9">
               <button className="bg-green-900 p-2 m-1 rounded " onClick={() => setMode("edit")}>
                 to edit mode
               </button>
@@ -360,6 +375,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
                               <BtnAddNum hin={hin} num={5}></BtnAddNum>
                               <BtnAddNum hin={hin} num={-1}></BtnAddNum>
                               <BtnAddNum hin={hin} num={-5}></BtnAddNum>
+                              <BtnClearNum hin={hin}></BtnClearNum>
                             </>
                           )}
                         </td>
