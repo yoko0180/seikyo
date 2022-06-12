@@ -217,7 +217,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
   const BtnClearNum: React.FC<{
     hin: Hinmoku
   }> = ({ hin, children }) => (
-    <button className="bg-blue-500 p-2 m-1 rounded " onClick={() => clearHinmokuNum(hin)}>
+    <button className="bg-blue-500 p-2 m-1 rounded float-right" onClick={() => clearHinmokuNum(hin)}>
     C
     </button>
   )
