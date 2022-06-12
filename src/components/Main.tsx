@@ -59,7 +59,12 @@ const def_labels = [
   ["kokubu", "国分常温"],
 ]
 
-const def_labels_chilled = ["チルド", "トオカツ", "デリア", "三桂"]
+const def_labels_chilled = [
+  ["c-chilled", "チルド"],
+  ["c-tokatu", "トオカツ"],
+  ["c-delia", "デリア"],
+  ["c-sankei", "三桂"]
+]
 
 const makeHinmokus = (hinsyu: Hinsyu, labels: string[][]): Hinmoku[] =>
   labels.map(([id, label]) => ({ id, hinsyu, label, num: "", state: "" }))
@@ -190,7 +195,7 @@ const Main: React.FC<{ lang: string }> = ({ lang }) => {
       {
         id: "shop_" + Date.now(),
         label,
-        hinmokus: makeHinmokus("jouon", def_labels),
+        hinmokus: makeHinmokus("jouon", def_labels).concat(makeHinmokus("chilled", def_labels_chilled)),
       },
     ])
     console.log("new_shops", new_shops)
