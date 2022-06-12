@@ -229,6 +229,7 @@ console.log('too')
     setInputShopName("")
   }
 
+  // 大学名プルダウンが変更されたらテキストにその名前をセットする
   useEffect(() => {
     const name = def_shop_names.find((s) => s[0] === selectShopName)
     if (!name) return
